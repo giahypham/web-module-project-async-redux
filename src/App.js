@@ -1,12 +1,15 @@
 import React from 'react';
 import './App.css';
 import { connect } from 'react-redux';
+import { useEffect } from 'react';
 
+import { fetchStart } from './actions';
+import { fetchSuccess } from './actions';
 
 import GifList from './components/GifList'
 import GifForm from './components/GifForm';
 
-
+import axios from 'axios';
 
 //Step 2: Build from App.js first then start out to other components
 //URL to test API: https://api.giphy.com/v1/gifs/search [add sign] ? api_key=DN6aSnqqzf1usJBHRC7EhFmdeBKv9bv3 [add sing] & q=dogs
@@ -20,12 +23,22 @@ function App(props) {
 
   const { loading, error } = props;
 
+  useEffect(() => {
+    props.fetchStart();
+    axios.get('https://api.giphy.com/v1/gifs/search?api_key=DN6aSnqqzf1usJBHRC7EhFmdeBKv9bv3&q=dogs')
+    .then(res => {
+      props.fetchSuccess(res.data.data);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  }, [])
+
   return (
     <div className="App">
       <h1>Search for Gifs</h1>
 
       <GifForm />
-
       {/* {
         loading ? <h3>We are loading</h3> : <GifList gifs={gifs}/> //GiftList take in gifs, not {gifs}
       } */}
@@ -51,7 +64,8 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(App);
+
+export default connect(mapStateToProps, {fetchStart, fetchSuccess})(App);
 //with connect, you can also connect action along with state to the component desired here we don't need to connect any actions
 
 
