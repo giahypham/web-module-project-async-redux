@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 
 import { fetchStart } from './actions';
 import { fetchSuccess } from './actions';
+import { getGifs } from './actions';
 
 import GifList from './components/GifList'
 import GifForm from './components/GifForm';
@@ -21,17 +22,10 @@ function App(props) {
   // const error = "";
   //Above are the slices of state to be passed into reducers, at this point before reducers, they are there to set up the app to see how it runs
 
-  const { loading, error } = props;
+  const { loading, error, getGifs } = props;
 
   useEffect(() => {
-    props.fetchStart();
-    axios.get('https://api.giphy.com/v1/gifs/search?api_key=DN6aSnqqzf1usJBHRC7EhFmdeBKv9bv3&q=dogs')
-    .then(res => {
-      props.fetchSuccess(res.data.data);
-    })
-    .catch(err => {
-      console.error(err);
-    })
+    getGifs()
   }, [])
 
   return (
@@ -65,7 +59,7 @@ const mapStateToProps = (state) => {
 }
 
 
-export default connect(mapStateToProps, {fetchStart, fetchSuccess})(App);
+export default connect(mapStateToProps, {getGifs})(App);
 //with connect, you can also connect action along with state to the component desired here we don't need to connect any actions
 
 
